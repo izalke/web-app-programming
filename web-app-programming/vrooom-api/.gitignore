@@ -1,0 +1,57 @@
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+
+# Binaries for Composer packages
+/vendor/
+
+# Symfony cache and logs
+/var/
+/var/cache/
+/var/log/
+/var/sessions/
+
+/var/storage/
+/var/test/
+/var/dev/
+/var/prod/
+
+# Environment variables
+/.env.*.local
+.env.local
+.env.*.local
+.env.test.local
+.env
+/.env.local.php
+/public/bundles/
+# JWT keys (ważne!)
+/config/jwt/private.pem
+/config/jwt/public.pem
+
+# Ignore secrets
+/config/secrets/*
+
+# Ignore database sqlite files (jeśli używasz sqlite)
+*.sqlite
+*.sqlite3
+
+# Ignore PHPUnit results
+/phpunit.xml
+/phpunit.result.cache
+
+# Node.js dependencies (jeśli kiedyś będziesz miał frontend)
+node_modules/
+
+# IDE/editor config files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Xdebug profiler output
+cachegrind.out.*
