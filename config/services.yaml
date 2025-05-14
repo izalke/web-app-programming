@@ -39,5 +39,9 @@ services:
         tags:
             - { name: 'api_platform.doctrine.orm.query_extension.collection' }
             - { name: 'api_platform.doctrine.orm.query_extension.item' }
+    App\Controller\CancelReservationController:
+        autowire: true
+        autoconfigure: true
+        public: true
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

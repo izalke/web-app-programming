@@ -1,4 +1,4 @@
-<!-- namespace App\EventListener;
+namespace App\EventListener;
 
 use App\Entity\User;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
@@ -11,4 +11,4 @@ class UserRoleListener
             $user->setRoles(['ROLE_USER']);
         }
     }
-} -->
+}

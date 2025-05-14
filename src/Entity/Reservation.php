@@ -23,17 +23,13 @@ use App\Controller\CancelReservationController;
         new Get(),
         new GetCollection(),
         new Post(),
-        new Put(security: "object.getUser() == user or is_granted('ROLE_ADMIN')"),
-        new Patch(security: "object.getUser() == user or is_granted('ROLE_ADMIN')"),
-        new Delete(security: "object.getUser() == user or is_granted('ROLE_ADMIN')"),
-        new Patch(
+        new Patch(),
+        new Delete(),
+        new Post(
             uriTemplate: '/reservations/{id}/cancel',
-            method: 'PATCH',
             controller: CancelReservationController::class,
-            read: true,
-            write: false,
-            deserialize: false,
-            security: "object.getUser() == user or is_granted('ROLE_ADMIN')",
+            input: false,
+            output: false,
             name: 'cancel_reservation'
         )
     ]
