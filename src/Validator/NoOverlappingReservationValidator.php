@@ -1,3 +1,5 @@
+<?php
+
 namespace App\Validator;
 
 use App\Entity\Reservation;
@@ -29,15 +31,16 @@ class NoOverlappingReservationValidator extends ConstraintValidator
         }
 
         $conflicts = $this->reservationRepository->createQueryBuilder('r')
-            ->andWhere('r.vehicle = :vehicle')
-            ->andWhere('r.endTime > :start AND r.startTime < :end')
-            ->setParameters([
-                'vehicle' => $vehicle,
-                'start' => $start,
-                'end' => $end,
-            ])
-            ->getQuery()
-            ->getResult();
+             ->andWhere('r.vehicle = :vehicle')
+             ->andWhere('r.endTime > :start AND r.startTime < :end')
+             ->andWhere('r.status != :cancelled')
+             ->setParameter('vehicle', $vehicle)
+             ->setParameter('start', $start)
+             ->setParameter('end', $end)
+             ->setParameter('cancelled', 'cancelled')
+             ->getQuery()
+             ->getResult();
+
 
         if (count($conflicts) > 0) {
             $this->context->buildViolation($constraint->message)->addViolation();

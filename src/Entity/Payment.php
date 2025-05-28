@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PaymentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Reservation;
 
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 #[ApiResource]
@@ -27,52 +28,43 @@ class Payment
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $user = null;
 
+    #[ORM\OneToOne(targetEntity: Reservation::class, mappedBy: "payment")]
+    private ?Reservation $reservation = null;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    public function getId(): ?int
+    public function getId(): ?int { return $this->id; }
+
+    public function getAmount(): float { return $this->amount; }
+    public function setAmount(float $amount): self { $this->amount = $amount; return $this; }
+
+    public function getStatus(): string { return $this->status; }
+    public function setStatus(string $status): self { $this->status = $status; return $this; }
+
+    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+
+    public function getUser(): ?User { return $this->user; }
+    public function setUser(?User $user): self { $this->user = $user; return $this; }
+
+    public function getReservation(): ?Reservation
     {
-        return $this->id;
+        return $this->reservation;
     }
 
-    public function getAmount(): float
+    public function setReservation(?Reservation $reservation): self
     {
-        return $this->amount;
-    }
+        if ($reservation === null && $this->reservation !== null) {
+            $this->reservation->setPayment(null);
+        }
 
-    public function setAmount(float $amount): self
-    {
-        $this->amount = $amount;
-        return $this;
-    }
+        if ($reservation !== null && $reservation->getPayment() !== $this) {
+            $reservation->setPayment($this);
+        }
 
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): self
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    public function getCreatedAt(): \DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
+        $this->reservation = $reservation;
         return $this;
     }
 }

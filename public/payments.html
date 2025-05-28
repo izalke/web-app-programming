@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Płatności</title>
+</head>
+<body>
+  <h1>💳 Historia płatności</h1>
+  <ul id="paymentList"></ul>
+
+  <script>
+    async function loadPayments() {
+      const token = localStorage.getItem('token');
+      const list = document.getElementById('paymentList');
+
+      if (!token) {
+        alert('Zaloguj się najpierw!');
+        window.location.href = 'loginpage.html';
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:8000/api/payments', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        if (!response.ok) throw new Error(`Błąd API ${response.status}`);
+
+        const data = await response.json();
+        list.innerHTML = '';
+
+        data.member.forEach(payment => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <strong>ID:</strong> ${payment.id} |
+            <strong>Status:</strong> ${payment.status} |
+            <strong>Kwota:</strong> ${payment.amount || 'brak'} zł
+          `;
+
+          if (payment.status === "pending") {
+            const payBtn = document.createElement("button");
+            payBtn.textContent = "Opłać";
+            payBtn.onclick = async () => {
+              try {
+                const payResponse = await fetch(`http://localhost:8000/api/payments/${payment.id}/pay`, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                  }
+                });
+
+                if (payResponse.ok) {
+                  alert('✅ Płatność zakończona sukcesem!');
+                  loadPayments(); // Odśwież płatności
+                  // Jeśli masz widok rezerwacji, odśwież go też tutaj, np. loadReservations();
+                } else {
+                  const errorText = await payResponse.text();
+                  alert('❌ Błąd podczas płatności: ' + errorText);
+                }
+              } catch (error) {
+                alert('❌ Błąd sieci: ' + error.message);
+              }
+            };
+            li.appendChild(payBtn);
+          }
+
+          list.appendChild(li);
+        });
+
+      } catch (err) {
+        console.error('❌ Błąd ładowania płatności:', err);
+        list.innerHTML = '<li>Nie udało się pobrać płatności.</li>';
+      }
+    }
+
+    loadPayments();
+  </script>
+</body>
+</html>

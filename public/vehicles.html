@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lista pojazdów</title>
+</head>
+<body>
+  <h1>🚗 Dostępne pojazdy</h1>
+  <ul id="vehicleList"></ul>
+
+  <script>
+  async function loadVehicles() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Brak tokena. Zaloguj się.");
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/vehicles", {
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("Błąd " + response.status);
+      }
+
+      const data = await response.json();
+
+      const list = document.getElementById("vehicleList");
+      list.innerHTML = ""; // wyczyść listę
+
+      data.member.forEach(vehicle => {
+        const li = document.createElement("li");
+        li.textContent = `${vehicle.brand} ${vehicle.model} (${vehicle.licensePlate}) – Dostępny: ${vehicle.available}`;
+        list.appendChild(li);
+      });
+    } catch (error) {
+      console.error("Błąd podczas ładowania pojazdów:", error);
+      document.getElementById("vehicleList").innerHTML =
+        "<li>Błąd: " + error.message + "</li>";
+    }
+  }
+
+  loadVehicles();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Logowanie</title>
+</head>
+<body>
+    <h2>Zaloguj się</h2>
+    <form id="login-form">
+        <label>Email: <input type="email" name="email" required></label><br><br>
+        <label>Hasło: <input type="password" name="password" required></label><br><br>
+        <button type="submit">Zaloguj</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script>
+        const form = document.getElementById("login-form");
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const data = {
+                email: formData.get("email"),
+                password: formData.get("password")
+            };
+
+            const resultElement = document.getElementById("result");
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    localStorage.setItem("token", result.token);
+                    resultElement.innerText = "Zalogowano pomyślnie!";
+                    setTimeout(() => {
+    window.location.href = "index.html";
+}, 1000);
+                } else {
+                    resultElement.innerText = "Błąd logowania.";
+                }
+            } catch (error) {
+                resultElement.innerText = "Błąd połączenia z serwerem.";
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

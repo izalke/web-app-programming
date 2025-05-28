@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zarządzanie pojazdami</title>
+</head>
+<body>
+  <h1>🚗 Zarządzaj pojazdami</h1>
+
+  <form id="vehicle-form">
+    <input type="hidden" name="id" />
+    <label>Marka: <input type="text" name="brand" required /></label><br>
+    <label>Model: <input type="text" name="model" required /></label><br>
+    <label>Rejestracja: <input type="text" name="licensePlate" required /></label><br>
+    <label>Dostępny: <input type="checkbox" name="available" /></label><br>
+    <label>Szerokość (lat): <input type="number" step="any" name="latitude" /></label><br>
+    <label>Długość (lon): <input type="number" step="any" name="longitude" /></label><br>
+    <label>Cena za godzinę: <input type="number" step="0.01" name="pricePerHour" required /></label><br>
+    <button type="submit">Zapisz</button>
+  </form>
+
+  <hr />
+  <ul id="vehicleList"></ul>
+
+  <script>
+    const form = document.getElementById("vehicle-form");
+    const list = document.getElementById("vehicleList");
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Zaloguj się jako administrator.");
+      window.location.href = "loginpage.html";
+    }
+
+    async function loadVehicles() {
+      const res = await fetch("http://localhost:8000/api/vehicles", {
+        headers: { Authorization: "Bearer " + token }
+      });
+      const data = await res.json();
+      list.innerHTML = "";
+
+      data.member.forEach(vehicle => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${vehicle.brand} ${vehicle.model} (${vehicle.licensePlate}) – ${vehicle.pricePerHour ?? 0} zł/godzina
+          <button onclick="editVehicle(${vehicle.id})">Edytuj</button>
+          <button onclick="deleteVehicle(${vehicle.id})">Usuń</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    async function editVehicle(id) {
+      const res = await fetch(`http://localhost:8000/api/vehicles/${id}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+      const vehicle = await res.json();
+      Object.entries(vehicle).forEach(([key, value]) => {
+        const field = form.elements[key];
+        if (field) {
+          if (field.type === "checkbox") field.checked = value;
+          else field.value = value;
+        }
+      });
+    }
+
+    async function deleteVehicle(id) {
+      if (!confirm("Na pewno usunąć pojazd?")) return;
+      await fetch(`http://localhost:8000/api/vehicles/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + token }
+      });
+      loadVehicles();
+    }
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const id = formData.get("id");
+      const data = {
+        brand: formData.get("brand"),
+        model: formData.get("model"),
+        licensePlate: formData.get("licensePlate"),
+        available: form.elements["available"].checked,
+        latitude: parseFloat(formData.get("latitude") || 0),
+        longitude: parseFloat(formData.get("longitude") || 0),
+        pricePerHour: parseFloat(formData.get("pricePerHour") || 0),
+      };
+
+      const method = id ? "PUT" : "POST";
+      const url = id
+        ? `http://localhost:8000/api/vehicles/${id}`
+        : `http://localhost:8000/api/vehicles`;
+
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.text();
+        if (!res.ok) {
+          console.error("Błąd z API:", result);
+          alert("❌ Błąd zapisu: " + result);
+          return;
+        }
+
+        form.reset();
+        loadVehicles();
+      } catch (err) {
+        console.error(err);
+        alert("❌ Błąd sieci: " + err.message);
+      }
+    });
+
+    loadVehicles();
+  </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Moje rezerwacje</title>
+</head>
+<body>
+  <h1>📅 Moje rezerwacje</h1>
+  <ul id="reservationList"></ul>
+
+  <script>
+    async function loadReservations() {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        alert('Brak tokena – najpierw się zaloguj!');
+        window.location.href = 'loginpage.html';
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:8000/api/reservations', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        if (!response.ok) throw new Error("Błąd " + response.status);
+
+        const data = await response.json();
+        const list = document.getElementById('reservationList');
+        list.innerHTML = '';
+
+        data.member.forEach(reservation => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            Pojazd: ${reservation.vehicle.brand} ${reservation.vehicle.model} (${reservation.vehicle.licensePlate}) |
+            Od: ${reservation.startTime} |
+            Do: ${reservation.endTime} |
+            Status: ${reservation.status}
+          `;
+
+          if (reservation.status !== 'cancelled') {
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = 'Anuluj';
+            cancelBtn.onclick = () => cancelReservation(reservation.id);
+            li.appendChild(cancelBtn);
+          }
+
+          list.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Błąd pobierania rezerwacji:', error);
+        document.getElementById("reservationList").innerHTML =
+          "<li>❌ Nie udało się pobrać rezerwacji. Czy jesteś zalogowany?</li>";
+      }
+    }
+
+    async function cancelReservation(id) {
+      const token = localStorage.getItem('token');
+      const confirmed = confirm('Czy na pewno chcesz anulować tę rezerwację?');
+
+      if (!confirmed) return;
+
+      try {
+        const response = await fetch(`http://localhost:8000/api/reservations/${id}/cancel`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          alert('Rezerwacja anulowana.');
+          loadReservations(); // odśwież listę
+        } else {
+          alert('Nie udało się anulować rezerwacji.');
+        }
+      } catch (error) {
+        console.error('Błąd anulowania:', error);
+        alert('Błąd połączenia z serwerem.');
+      }
+    }
+
+    loadReservations();
+  </script>
+</body>
+</html>

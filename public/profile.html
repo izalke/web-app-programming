@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profil użytkownika</title>
+</head>
+<body>
+  <h1>👤 Profil</h1>
+  <div id="profileInfo">Ładowanie danych użytkownika...</div>
+
+  <script>
+    // Funkcja do parsowania payloadu z JWT
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+          '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        ).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    const token = localStorage.getItem('token');
+    const container = document.getElementById('profileInfo');
+
+    if (!token) {
+      container.innerHTML = '❌ Nie jesteś zalogowany. <a href="loginpage.html">Zaloguj się</a>';
+    } else {
+      const payload = parseJwt(token);
+      if (!payload) {
+        container.innerHTML = '❌ Błędny token. <a href="loginpage.html">Zaloguj się ponownie</a>';
+      } else {
+        container.innerHTML = `
+          <p><strong>Email:</strong> ${payload.username || payload.email}</p>
+          <p><strong>Role:</strong> ${payload.roles?.join(', ')}</p>
+          <p><strong>ID użytkownika:</strong> ${payload.user_id || 'brak'}</p>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>

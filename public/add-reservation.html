@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Nowa rezerwacja</title>
+</head>
+<body>
+  <h1>📆 Zarezerwuj pojazd</h1>
+
+  <form id="reservationForm">
+    <label>Pojazd:
+      <select id="vehicleSelect" required></select>
+    </label><br><br>
+
+    <label>Początek:
+      <input type="datetime-local" id="startTime" required>
+    </label><br><br>
+
+    <label>Koniec:
+      <input type="datetime-local" id="endTime" required>
+    </label><br><br>
+
+    <button type="submit">Zarezerwuj</button>
+  </form>
+
+  <p id="result"></p>
+
+  <script>
+  async function loadVehicles() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Zaloguj się najpierw!');
+      window.location.href = 'loginpage.html';
+      return;
+    }
+
+    const response = await fetch('http://localhost:8000/api/vehicles', {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+
+    const data = await response.json();
+    const select = document.getElementById('vehicleSelect');
+
+    data.member.forEach(vehicle => {
+      const option = document.createElement('option');
+      option.value = vehicle['@id'];
+      option.dataset.price = vehicle.pricePerHour;
+      option.text = `${vehicle.brand} ${vehicle.model} (${vehicle.licensePlate}) - ${vehicle.pricePerHour} zł/h`;
+      select.appendChild(option);
+    });
+  }
+
+  document.getElementById('reservationForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const vehicleSelect = document.getElementById('vehicleSelect');
+    const vehicleId = vehicleSelect.value;
+    const pricePerHour = parseFloat(vehicleSelect.selectedOptions[0].dataset.price);
+    const start = new Date(document.getElementById('startTime').value);
+    const end = new Date(document.getElementById('endTime').value);
+    const hours = Math.max((end - start) / 3600000, 0.25); // min. 15 minut
+    const totalAmount = +(hours * pricePerHour).toFixed(2);
+
+    const result = document.getElementById('result');
+
+    try {
+      const resResponse = await fetch('http://localhost:8000/api/reservations', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          vehicle: vehicleId,
+          startTime: start.toISOString(),
+          endTime: end.toISOString()
+        })
+      });
+
+      if (!resResponse.ok) {
+        const errorText = await resResponse.text();
+        result.textContent = '❌ Błąd rezerwacji: ' + errorText;
+        return;
+      }
+
+      const reservation = await resResponse.json();
+
+      const payResponse = await fetch('http://localhost:8000/api/payments', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          reservation: reservation['@id'],
+          amount: totalAmount
+        })
+      });
+
+      if (payResponse.ok) {
+        result.textContent = `✅ Rezerwacja i płatność dodane (${totalAmount} zł).`;
+      } else {
+        const payError = await payResponse.text();
+        result.textContent = '❌ Rezerwacja dodana, ale błąd płatności: ' + payError;
+      }
+
+    } catch (err) {
+      result.textContent = '❌ Błąd połączenia z serwerem.';
+      console.error(err);
+    }
+  });
+
+  loadVehicles();
+</script>
+</body>
+</html>
