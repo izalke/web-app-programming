@@ -6,7 +6,11 @@
     "moduleResolution": "node",
     "jsx": "react-jsx",
     "strict": true,
-    "noEmit": true
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true, // <- często naprawia konflikty typów w node_modules
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"]
 }

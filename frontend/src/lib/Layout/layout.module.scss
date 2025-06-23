@@ -1,0 +1,26 @@
+@use "sass:map";
+@import "../../assets/theme.scss";
+.wrapper {
+  width: 100dvw;
+
+  & > main {
+    padding: 0 0 0 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+    & > main {
+      padding: 10px 0 0 0;
+    }
+  }
+}
+
+.progressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background-color: map.get($theme, "yinmnBlue");
+  transform-origin: 0%;
+  z-index: 1000;
+}
