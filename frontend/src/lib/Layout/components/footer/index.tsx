@@ -12,29 +12,29 @@ const Footer: React.FC = () => {
           <div className={styles.infoItem}>
             <FaMapMarkerAlt />
             <span>
-              368 Bluff City Blvd Suite 100 Unit D Elgin, <br />
-              IL 60120
+              ul. Zamkowa 15A Lok. 4 Kraków, <br />
+              30-301
             </span>
           </div>
           <div className={styles.infoItem}>
             <FaPhoneAlt />
-            <span>+1 (630) 206-0995</span>
+            <span>+48 503 825 810</span>
           </div>
           <div className={styles.infoItem}>
             <FaEnvelope />
-            <a href="mailto:info@weovernight.com">info@weovernight.com</a>
+            <a href="mailto:info@weovernight.com">vroom@carsharing.com</a>
           </div>
           <div className={styles.infoItem}>
             <FaClock />
-            <span>Mon - Fri: 6:00 AM - 5:00 PM</span>
+            <span>Poniedziałek - Piątek: 6:00 - 17:00</span>
           </div>
         </div>
 
         <div className={styles.rightSection}>
           <div className={styles.about}>
-            Speed, reliability, and dedication – we deliver more than just
-            cargo, we deliver trust. Choose us for seamless logistics, because
-            your business deserves the best.
+            Szybkość, niezawodność i wygoda – oferujemy coś więcej niż tylko
+            samochody, oferujemy swobodę podróżowania. Wybierz nasz car sharing
+            i ciesz się mobilnością wtedy, gdy jej potrzebujesz.
           </div>
           <div className={styles.socialMedia}>
             <a
@@ -49,8 +49,7 @@ const Footer: React.FC = () => {
       </div>
 
       <div className={styles.copyright}>
-        &copy; {new Date().getFullYear()} Overnight Trucking INC. All rights
-        reserved.
+        &copy; {new Date().getFullYear()} Vroom. Wszelkie prawa zastrzeżone.
       </div>
     </footer>
   )
