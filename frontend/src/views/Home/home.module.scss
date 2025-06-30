@@ -1,0 +1,779 @@
+@use "sass:map";
+@import "../../assets/theme.scss";
+
+.header {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-size: cover;
+  background-position: center;
+  padding: 0 5%;
+  color: map.get($theme, "antiflashWhite");
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(
+      0,
+      0,
+      0,
+      0.5
+    ); // Ulepszone przyciemnienie dla lepszej widoczności
+  }
+
+  @media (max-width: 768px) {
+    height: 80vh;
+    justify-content: center;
+    text-align: center;
+    padding: 0 3%;
+  }
+
+  @media (max-width: 480px) {
+    height: 75vh;
+    padding: 0 2%;
+  }
+}
+
+.textBox {
+  position: relative;
+  max-width: 650px;
+  z-index: 2;
+  margin-top: 8vh;
+
+  @media (max-width: 768px) {
+    margin-top: 5vh;
+    max-width: 90%;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 3vh;
+    max-width: 95%;
+  }
+}
+
+.headerContent {
+  h1 {
+    font-size: 3.8rem;
+    font-weight: bold;
+    line-height: 1.2;
+    color: map.get($theme, "antiflashWhite");
+    margin-bottom: 1rem;
+
+    .dot {
+      color: map.get($theme, "yinmnBlue");
+    }
+
+    @media (max-width: 768px) {
+      font-size: 3rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 2.5rem;
+    }
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: map.get($theme, "whiteOnly");
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  @media (max-width: 480px) {
+    gap: 0.6rem;
+  }
+}
+
+.primaryButton {
+  background: map.get($theme, "yinmnBlue");
+  color: map.get($theme, "antiflashWhite");
+  padding: 0.85rem 1.8rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    background: map.get($theme, "yinmBlueAfter");
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.secondaryButton {
+  background: transparent;
+  color: map.get($theme, "antiflashWhite");
+  padding: 0.85rem 1.8rem;
+  border: 2px solid map.get($theme, "antiflashWhite");
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    background: map.get($theme, "antiflashWhite");
+    color: map.get($theme, "richBlack");
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Services Section */
+.servicesSection {
+  padding: 4rem 2rem;
+  background-color: #f8f8f8;
+  margin-bottom: 4rem;
+
+  .heading {
+    text-align: center;
+    font-size: 2rem;
+    color: map.get($theme, "yinmnBlue");
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .description {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1rem;
+  }
+
+  .services {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      gap: 1rem;
+    }
+  }
+
+  .serviceItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 250px;
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    .icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: map.get($theme, "yinmnBlue");
+    }
+
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 0.875rem;
+      color: #666;
+      font-weight: 400;
+    }
+  }
+}
+
+/* About Section */
+.infoSection {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f8f8f8;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
+
+  .content {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    text-align: center;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  .left,
+  .right {
+    flex: 1;
+    margin: 1rem;
+
+    @media (max-width: 768px) {
+      margin: 0.5rem 0;
+    }
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: map.get($theme, "yinmnBlue");
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+
+    @media (max-width: 768px) {
+      font-size: 0.85rem;
+    }
+  }
+
+  .title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #001829;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.3rem;
+    }
+  }
+
+  .underline {
+    width: 50px;
+    height: 4px;
+    background-color: map.get($theme, "yinmnBlue");
+    margin-top: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .right p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 1.5rem;
+
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.85rem;
+    }
+  }
+}
+
+/* About Section */
+.aboutSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.5rem;
+  }
+
+  .textContainer {
+    flex: 1;
+    padding-right: 2rem;
+
+    @media (max-width: 768px) {
+      padding-right: 0;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+      color: map.get($theme, "yinmnBlue");
+      margin-bottom: 1rem;
+
+      @media (max-width: 768px) {
+        font-size: 1.7rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1.5rem;
+      }
+    }
+
+    p {
+      font-size: 1rem;
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+
+      @media (max-width: 768px) {
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  .imageContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    img {
+      max-width: 100%;
+      height: auto;
+
+      @media (max-width: 768px) {
+        max-width: 80%;
+      }
+
+      @media (max-width: 480px) {
+        max-width: 90%;
+      }
+    }
+  }
+}
+
+// Testimontials Section
+
+.testimonials {
+  padding: 100px;
+  background-color: map.get($theme, "whiteOnly");
+
+  @media (max-width: 768px) {
+    padding: 60px 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 40px 15px;
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: map.get($theme, "richBlack");
+    margin-bottom: 20px;
+    position: relative;
+    text-align: center;
+
+    &::after {
+      content: "";
+      display: block;
+      width: 50px;
+      height: 3px;
+      background-color: map.get($theme, "yinmnBlue");
+      margin: 5px auto 0;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+    }
+  }
+
+  .testimonialContainer {
+    display: flex;
+    gap: 20px;
+    overflow: hidden;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+  }
+
+  .testimonialCard {
+    flex: 1;
+    background: map.get($theme, "antiflashWhite");
+    box-shadow: map.get($theme, "shadow");
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    border: 1px solid map.get($theme, "afterGrey");
+    max-width: 100%;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 15px;
+      max-width: 90%;
+    }
+
+    .text {
+      font-size: 16px;
+      line-height: 1.5;
+      color: map.get($theme, "richBlack");
+      margin-bottom: 15px;
+
+      @media (max-width: 768px) {
+        font-size: 14px;
+      }
+    }
+
+    .author {
+      font-size: 14px;
+      font-weight: bold;
+      color: map.get($theme, "richBlack");
+
+      @media (max-width: 768px) {
+        font-size: 13px;
+      }
+    }
+
+    .company {
+      font-size: 13px;
+      color: map.get($theme, "afterGrey");
+
+      @media (max-width: 768px) {
+        font-size: 12px;
+      }
+    }
+
+    .quoteIcon {
+      font-size: 40px;
+      color: map.get($theme, "afterGrey");
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      opacity: 0.3;
+
+      @media (max-width: 768px) {
+        font-size: 30px;
+        right: 10px;
+      }
+    }
+  }
+}
+
+//  Fleet Section
+
+.fleetSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 3rem 1.5rem;
+  }
+
+  .textContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; // Ustawienie na start, aby prawy tekst nie równał się do nagłówka
+    width: 100%;
+    gap: 4rem;
+    margin-bottom: 3rem;
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .textBlock {
+      flex: 1;
+      max-width: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      @media (max-width: 1024px) {
+        max-width: 100%;
+      }
+
+      &:first-child {
+        h2 {
+          font-size: 2rem;
+          font-weight: bold;
+          color: map.get($theme, "richBlack");
+          margin-bottom: 1rem;
+          position: relative;
+          display: inline-block;
+
+          &::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: map.get($theme, "yinmnBlue");
+            margin-top: 8px;
+          }
+        }
+      }
+
+      &:nth-child(2) {
+        // Dla drugiego bloku tekstu po prawej
+        margin-top: 4rem; // Przesunięcie w dół, aby zrównać się z pierwszym akapitem po lewej
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #333;
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  .imageContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    gap: 1rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+
+    .imageWrapper {
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: map.get($theme, "shadow");
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 2px;
+      }
+    }
+
+    .fleetCard {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: map.get($theme, "yinmnBlue");
+      color: map.get($theme, "antiflashWhite");
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 8px;
+      padding: 2rem;
+
+      @media (max-width: 1024px) {
+        font-size: 1.3rem;
+        padding: 1.5rem;
+      }
+    }
+  }
+}
+// Two Photos Section
+// Two Photos Section
+.featureSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 3rem 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+  }
+
+  .feature {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 100%;
+    margin-bottom: 3rem;
+
+    // Na desktopie parzyste sekcje odwracamy
+    &:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    @media (max-width: 1024px) {
+      flex-direction: column !important;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .imageContainer {
+      flex: 1;
+      max-width: 50%;
+      border-radius: 8px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        display: block;
+      }
+
+      @media (max-width: 1024px) {
+        max-width: 100%;
+        order: -1; // NA MOBILE OBRAZEK IDZIE NA GÓRĘ
+      }
+    }
+
+    .textContent {
+      flex: 1;
+      max-width: 50%;
+
+      @media (max-width: 1024px) {
+        max-width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      @media (max-width: 768px) {
+        text-align: left;
+        padding: 0 10px;
+      }
+
+      .number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: map.get($theme, "richBlack");
+        margin-bottom: 0.5rem;
+
+        @media (max-width: 768px) {
+          font-size: 1.8rem;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 1.6rem;
+        }
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: map.get($theme, "richBlack");
+        margin-bottom: 1rem;
+
+        &::after {
+          content: "";
+          display: block;
+          width: 60px;
+          height: 3px;
+          background-color: map.get($theme, "yinmnBlue");
+          margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+          font-size: 1.6rem;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 1.4rem;
+        }
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #333;
+        margin-bottom: 1rem;
+
+        @media (max-width: 768px) {
+          font-size: 1rem;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 0.95rem;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+}

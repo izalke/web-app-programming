@@ -1,10 +1,28 @@
-import { StrictMode } from "react"
-import { createRoot } from "react-dom/client"
-import "./index.css"
-import App from "./App"
+import React from "react"
+import ReactDOM from "react-dom/client"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import "./App.scss"
+import Layout from "./lib/Layout"
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+// views
+import Home from "./views/Home"
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    // errorElement: <NotFound />,
+    children: [
+      {
+        path: "",
+        element: <Home />,
+      },
+    ],
+  },
+])
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
 )

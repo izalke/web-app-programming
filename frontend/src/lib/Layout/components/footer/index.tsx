@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
           </div>
           <div className={styles.socialMedia}>
             <a
-              href="https://www.facebook.com/profile.php?id=61575436269528"
+              href="https://www.facebook.com"
               target="_blank"
               rel="noopener noreferrer"
             >
