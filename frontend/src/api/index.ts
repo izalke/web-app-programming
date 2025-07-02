@@ -1,34 +1,34 @@
-import axios, { AxiosInstance } from "axios"
+import axios from "axios"
 
-class API {
-  baseURL: string
-  instance: AxiosInstance
+const API_BASE_URL = "http://localhost:8000/api"
 
-  constructor(baseURL: string) {
-    this.baseURL = baseURL
-    this.instance = axios.create({
-      baseURL: baseURL,
-    })
-  }
-
-  sendContactRequest = async (contactData: any) => {
-    return this.instance.post(`/contact/vroom`, contactData)
-  }
-
-  sendMailWithAttachment = async (contactData: any) => {
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-    return this.instance.post(
-      "/contact/vroom/attachments",
-      contactData,
-      config
-    )
-  }
+export interface RegisterResponse {
+  message: string
 }
 
-const api = new API("https://")
+export interface RegisterError {
+  error: string
+}
 
-export default api
+export async function registerUser(
+  email: string,
+  password: string
+): Promise<RegisterResponse> {
+  try {
+    const response = await axios.post<RegisterResponse>(
+      `${API_BASE_URL}/register`,
+      {
+        email,
+        password,
+      }
+    )
+
+    return response.data
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.error) {
+      throw new Error(error.response.data.error)
+    } else {
+      throw new Error("Nieznany błąd podczas rejestracji")
+    }
+  }
+}

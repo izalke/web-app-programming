@@ -6,6 +6,7 @@ import Layout from "./lib/Layout"
 
 // views
 import Home from "./views/Home"
+import Register from "./views/Register"
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Home />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
       },
     ],
   },
