@@ -24,24 +24,5 @@ services:
             - '../src/Kernel.php'
     App\Validator\NoOverlappingReservationValidator:
         tags: [validator.constraint_validator]
-    App\State\ReservationProcessor:
-        decorates: 'api_platform.doctrine.orm.state.persist_processor'
-        arguments:
-            - '@App\State\ReservationProcessor.inner'
-            - '@security.helper'
-        autowire: true
-        autoconfigure: false
-        tags:
-            - { name: 'api_platform.state_processor' }
-    App\Doctrine\CurrentUserReservationExtension:
-        arguments:
-            $security: '@security.helper'
-        tags:
-            - { name: 'api_platform.doctrine.orm.query_extension.collection' }
-            - { name: 'api_platform.doctrine.orm.query_extension.item' }
-    App\Controller\CancelReservationController:
-        autowire: true
-        autoconfigure: true
-        public: true
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

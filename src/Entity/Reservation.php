@@ -46,8 +46,7 @@ class Reservation
     #[Groups(['reservation:read', 'reservation:write'])]
     private ?Vehicle $vehicle = null;
 
-    #[ORM\OneToOne(targetEntity: Payment::class, inversedBy: "reservation", cascade: ['persist'])]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\OneToOne(mappedBy: "reservation", targetEntity: Payment::class, cascade: ["persist", "remove"])]
     #[Groups(['reservation:read'])]
     private ?Payment $payment = null;
 
@@ -77,6 +76,9 @@ class Reservation
     public function setPayment(?Payment $payment): self
     {
         $this->payment = $payment;
+        if ($payment && $payment->getReservation() !== $this) {
+            $payment->setReservation($this);
+        }
         return $this;
     }
 

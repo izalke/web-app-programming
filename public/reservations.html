@@ -2,16 +2,27 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Moje rezerwacje</title>
+  <title>Twoje rezerwacje</title>
 </head>
 <body>
-  <h1>📅 Moje rezerwacje</h1>
+  <h1>Twoje rezerwacje</h1>
   <ul id="reservationList"></ul>
 
   <script>
+    async function getVehicleData(iri, token) {
+      try {
+        const res = await fetch('http://localhost:8000' + iri, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (e) {
+        return null;
+      }
+    }
+
     async function loadReservations() {
       const token = localStorage.getItem('token');
-
       if (!token) {
         alert('Brak tokena – najpierw się zaloguj!');
         window.location.href = 'loginpage.html';
@@ -20,26 +31,57 @@
 
       try {
         const response = await fetch('http://localhost:8000/api/reservations', {
-          headers: {
-            'Authorization': 'Bearer ' + token
-          }
+          headers: { 'Authorization': 'Bearer ' + token }
         });
 
         if (!response.ok) throw new Error("Błąd " + response.status);
-
         const data = await response.json();
+
         const list = document.getElementById('reservationList');
         list.innerHTML = '';
 
-        data.member.forEach(reservation => {
+        
+        const reservations = Array.isArray(data.member) ? data.member : [];
+
+        
+        for (const reservation of reservations) {
           const li = document.createElement('li');
+          let vehicleText = "brak danych";
+          let pricePerHour = 0;
+
+          if (typeof reservation.vehicle === "string") {
+            
+            const vehicleData = await getVehicleData(reservation.vehicle, token);
+            if (vehicleData) {
+              vehicleText = `${vehicleData.brand} ${vehicleData.model} (${vehicleData.licensePlate})`;
+              pricePerHour = vehicleData.pricePerHour;
+              reservation.vehicle = vehicleData; 
+            } else {
+              vehicleText = `Pojazd ID: ${reservation.vehicle.replace('/api/vehicles/', '')}`;
+            }
+          } else if (reservation.vehicle) {
+            
+            const v = reservation.vehicle;
+            vehicleText = `${v.brand} ${v.model} (${v.licensePlate})`;
+            pricePerHour = v.pricePerHour;
+          }
+
           li.innerHTML = `
-            Pojazd: ${reservation.vehicle.brand} ${reservation.vehicle.model} (${reservation.vehicle.licensePlate}) |
+            Pojazd: ${vehicleText} |
             Od: ${reservation.startTime} |
             Do: ${reservation.endTime} |
             Status: ${reservation.status}
           `;
 
+          
+          if (reservation.status !== 'cancelled' && !reservation.payment) {
+            const payBtn = document.createElement('button');
+            payBtn.textContent = 'Dodaj płatność';
+            payBtn.onclick = () => payForReservation(reservation, pricePerHour);
+            li.appendChild(payBtn);
+          }
+
+          
           if (reservation.status !== 'cancelled') {
             const cancelBtn = document.createElement('button');
             cancelBtn.textContent = 'Anuluj';
@@ -48,7 +90,7 @@
           }
 
           list.appendChild(li);
-        });
+        }
       } catch (error) {
         console.error('Błąd pobierania rezerwacji:', error);
         document.getElementById("reservationList").innerHTML =
@@ -56,24 +98,57 @@
       }
     }
 
-    async function cancelReservation(id) {
+    async function payForReservation(reservation, pricePerHour) {
       const token = localStorage.getItem('token');
-      const confirmed = confirm('Czy na pewno chcesz anulować tę rezerwację?');
+      
+      pricePerHour = pricePerHour || (reservation.vehicle && reservation.vehicle.pricePerHour) || 0;
+      const start = new Date(reservation.startTime);
+      const end = new Date(reservation.endTime);
+      const hours = Math.max((end - start) / 3600000, 0.25);
+      const totalAmount = +(hours * pricePerHour).toFixed(2);
 
-      if (!confirmed) return;
+      if (!confirm(`Czy na pewno chcesz opłacić rezerwację za ${totalAmount} zł?`)) return;
 
       try {
-        const response = await fetch(`http://localhost:8000/api/reservations/${id}/cancel`, {
+        const response = await fetch('http://localhost:8000/api/payments', {
           method: 'POST',
           headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
-          }
+          },
+          body: JSON.stringify({
+            reservation: `/api/reservations/${reservation.id}`,
+            amount: totalAmount
+          })
+        });
+
+        if (response.ok) {
+          alert('✅ Płatność dodana!');
+          loadReservations();
+        } else {
+          const payError = await response.text();
+          alert('❌ Błąd płatności: ' + payError);
+        }
+      } catch (error) {
+        alert('❌ Błąd połączenia z serwerem.');
+        console.error(error);
+      }
+    }
+
+    async function cancelReservation(id) {
+      const token = localStorage.getItem('token');
+      const confirmed = confirm('Czy na pewno chcesz anulować tę rezerwację?');
+      if (!confirmed) return;
+
+      try {
+        const response = await fetch(`http://localhost:8000/api/reservations/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
         });
 
         if (response.ok) {
           alert('Rezerwacja anulowana.');
-          loadReservations(); // odśwież listę
+          loadReservations();
         } else {
           alert('Nie udało się anulować rezerwacji.');
         }

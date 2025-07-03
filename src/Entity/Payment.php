@@ -20,7 +20,7 @@ class Payment
     private float $amount;
 
     #[ORM\Column(length: 20)]
-    private string $status = 'pending'; // 'pending', 'paid', 'failed'
+    private string $status = 'pending'; 
 
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
@@ -28,7 +28,8 @@ class Payment
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $user = null;
 
-    #[ORM\OneToOne(targetEntity: Reservation::class, mappedBy: "payment")]
+    #[ORM\OneToOne(targetEntity: Reservation::class, inversedBy: "payment")]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Reservation $reservation = null;
 
     public function __construct()
@@ -49,22 +50,13 @@ class Payment
     public function getUser(): ?User { return $this->user; }
     public function setUser(?User $user): self { $this->user = $user; return $this; }
 
-    public function getReservation(): ?Reservation
-    {
-        return $this->reservation;
-    }
-
+    public function getReservation(): ?Reservation { return $this->reservation; }
     public function setReservation(?Reservation $reservation): self
     {
-        if ($reservation === null && $this->reservation !== null) {
-            $this->reservation->setPayment(null);
-        }
-
-        if ($reservation !== null && $reservation->getPayment() !== $this) {
+        $this->reservation = $reservation;
+        if ($reservation && $reservation->getPayment() !== $this) {
             $reservation->setPayment($this);
         }
-
-        $this->reservation = $reservation;
         return $this;
     }
 }

@@ -31,7 +31,7 @@
         const data = await response.json();
         list.innerHTML = '';
 
-        data.member.forEach(payment => {
+        (data.member || data).forEach(payment => {
           const li = document.createElement('li');
           li.innerHTML = `
             <strong>ID:</strong> ${payment.id} |
@@ -39,23 +39,22 @@
             <strong>Kwota:</strong> ${payment.amount || 'brak'} zł
           `;
 
-          if (payment.status === "pending") {
-            const payBtn = document.createElement("button");
-            payBtn.textContent = "Opłać";
+          
+          if (payment.status === 'pending') {
+            const payBtn = document.createElement('button');
+            payBtn.textContent = '💰 Opłać';
             payBtn.onclick = async () => {
               try {
                 const payResponse = await fetch(`http://localhost:8000/api/payments/${payment.id}/pay`, {
                   method: 'POST',
                   headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json'
+                    'Authorization': 'Bearer ' + token
                   }
                 });
 
                 if (payResponse.ok) {
                   alert('✅ Płatność zakończona sukcesem!');
-                  loadPayments(); // Odśwież płatności
-                  // Jeśli masz widok rezerwacji, odśwież go też tutaj, np. loadReservations();
+                  loadPayments();
                 } else {
                   const errorText = await payResponse.text();
                   alert('❌ Błąd podczas płatności: ' + errorText);
@@ -64,6 +63,7 @@
                 alert('❌ Błąd sieci: ' + error.message);
               }
             };
+            li.appendChild(document.createTextNode(' '));
             li.appendChild(payBtn);
           }
 
