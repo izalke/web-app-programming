@@ -39,7 +39,7 @@
       const data = await res.json();
       list.innerHTML = "";
 
-      data.member.forEach(vehicle => {
+      data.forEach(vehicle => {
         const li = document.createElement("li");
         li.innerHTML = `
           ${vehicle.brand} ${vehicle.model} (${vehicle.licensePlate}) – ${vehicle.pricePerHour ?? 0} zł/godzina

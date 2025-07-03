@@ -18,17 +18,6 @@ use App\Entity\Payment;
 use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
-#[ApiResource(
-    normalizationContext: ['groups' => ['reservation:read']],
-    denormalizationContext: ['groups' => ['reservation:write']],
-    operations: [
-        new Get(),
-        new GetCollection(),
-        new Post(),
-        new Patch(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_USER')")
-    ]
-)]
 #[NoOverlappingReservation]
 class Reservation
 {

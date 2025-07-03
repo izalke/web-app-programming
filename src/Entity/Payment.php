@@ -6,30 +6,36 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PaymentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Reservation;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
-#[ApiResource]
 class Payment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['payment:read'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['payment:read'])]
     private float $amount;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['payment:read'])]
     private string $status = 'pending'; 
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['payment:read'])]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Groups(['payment:read'])]
     private ?User $user = null;
 
     #[ORM\OneToOne(targetEntity: Reservation::class, inversedBy: "payment")]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['payment:read'])]
     private ?Reservation $reservation = null;
 
     public function __construct()

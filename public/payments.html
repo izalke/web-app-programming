@@ -31,7 +31,7 @@
         const data = await response.json();
         list.innerHTML = '';
 
-        (data.member || data).forEach(payment => {
+        data.forEach(payment => {
           const li = document.createElement('li');
           li.innerHTML = `
             <strong>ID:</strong> ${payment.id} |

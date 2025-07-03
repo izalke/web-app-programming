@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use ApiPlatform\Api\IriConverterInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/api/payments')]
@@ -29,11 +28,7 @@ class PaymentController extends AbstractController
 
    #[Route('', name: 'payment_create', methods: ['POST'])]
 #[IsGranted('ROLE_USER')]
-public function create(
-    Request $request,
-    EntityManagerInterface $em,
-    IriConverterInterface $iriConverter
-): JsonResponse {
+public function create(Request $request, EntityManagerInterface $em): JsonResponse {
     $user = $this->getUser();
     $data = json_decode($request->getContent(), true);
 
@@ -44,17 +39,19 @@ public function create(
         return new JsonResponse(['error' => 'Brak danych'], 400);
     }
 
-    try {
-        $reservation = $iriConverter->getItemFromIri($reservationIri);
-    } catch (\Exception $e) {
+    // Wyciągnij ID z IRI np. "/api/reservations/5" → "5"
+    if (preg_match('#/api/reservations/(\d+)$#', $reservationIri, $matches)) {
+        $reservationId = (int)$matches[1];
+    } else {
         return new JsonResponse(['error' => 'Niepoprawny IRI rezerwacji'], 400);
     }
 
-    if (!$reservation instanceof Reservation || !$reservation->getId()) {
+    $reservation = $em->getRepository(Reservation::class)->find($reservationId);
+
+    if (!$reservation) {
         return new JsonResponse(['error' => 'Rezerwacja nie znaleziona'], 404);
     }
 
-    
     if ($reservation->getPayment()) {
         return new JsonResponse(['error' => 'Płatność już istnieje dla tej rezerwacji!'], 400);
     }

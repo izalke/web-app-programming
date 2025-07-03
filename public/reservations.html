@@ -9,18 +9,6 @@
   <ul id="reservationList"></ul>
 
   <script>
-    async function getVehicleData(iri, token) {
-      try {
-        const res = await fetch('http://localhost:8000' + iri, {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (!res.ok) return null;
-        return await res.json();
-      } catch (e) {
-        return null;
-      }
-    }
-
     async function loadReservations() {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -40,51 +28,38 @@
         const list = document.getElementById('reservationList');
         list.innerHTML = '';
 
-        
-        const reservations = Array.isArray(data.member) ? data.member : [];
+        const reservations = Array.isArray(data) ? data : data.member || [];
 
-        
         for (const reservation of reservations) {
           const li = document.createElement('li');
           let vehicleText = "brak danych";
           let pricePerHour = 0;
 
-          if (typeof reservation.vehicle === "string") {
-            
-            const vehicleData = await getVehicleData(reservation.vehicle, token);
-            if (vehicleData) {
-              vehicleText = `${vehicleData.brand} ${vehicleData.model} (${vehicleData.licensePlate})`;
-              pricePerHour = vehicleData.pricePerHour;
-              reservation.vehicle = vehicleData; 
-            } else {
-              vehicleText = `Pojazd ID: ${reservation.vehicle.replace('/api/vehicles/', '')}`;
-            }
-          } else if (reservation.vehicle) {
-            
+          if (reservation.vehicle) {
             const v = reservation.vehicle;
             vehicleText = `${v.brand} ${v.model} (${v.licensePlate})`;
-            pricePerHour = v.pricePerHour;
+            pricePerHour = v.pricePerHour || 0;
           }
 
           li.innerHTML = `
-            Pojazd: ${vehicleText} |
-            Od: ${reservation.startTime} |
-            Do: ${reservation.endTime} |
-            Status: ${reservation.status}
+            <strong>Pojazd:</strong> ${vehicleText} |
+            <strong>Od:</strong> ${reservation.startTime} |
+            <strong>Do:</strong> ${reservation.endTime} |
+            <strong>Status:</strong> ${reservation.status}
           `;
 
-          
+          // Dodaj przycisk płatności jeśli nieopłacone
           if (reservation.status !== 'cancelled' && !reservation.payment) {
             const payBtn = document.createElement('button');
-            payBtn.textContent = 'Dodaj płatność';
+            payBtn.textContent = '💰 Dodaj płatność';
             payBtn.onclick = () => payForReservation(reservation, pricePerHour);
             li.appendChild(payBtn);
           }
 
-          
+          // Dodaj przycisk anulowania jeśli aktywna
           if (reservation.status !== 'cancelled') {
             const cancelBtn = document.createElement('button');
-            cancelBtn.textContent = 'Anuluj';
+            cancelBtn.textContent = '❌ Anuluj';
             cancelBtn.onclick = () => cancelReservation(reservation.id);
             li.appendChild(cancelBtn);
           }
@@ -100,8 +75,7 @@
 
     async function payForReservation(reservation, pricePerHour) {
       const token = localStorage.getItem('token');
-      
-      pricePerHour = pricePerHour || (reservation.vehicle && reservation.vehicle.pricePerHour) || 0;
+
       const start = new Date(reservation.startTime);
       const end = new Date(reservation.endTime);
       const hours = Math.max((end - start) / 3600000, 0.25);

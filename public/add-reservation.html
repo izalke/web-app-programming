@@ -43,7 +43,7 @@
       const data = await response.json();
       const select = document.getElementById('vehicleSelect');
 
-      data.member.forEach(vehicle => {
+      data.forEach(vehicle => {
         const option = document.createElement('option');
         option.value = vehicle.id;
         option.dataset.price = vehicle.pricePerHour;
@@ -75,7 +75,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            vehicle: `/api/vehicles/${vehicleId}`,
+            vehicle: vehicleId,
             startTime: start.toISOString(),
             endTime: end.toISOString()
           })
