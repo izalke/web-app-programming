@@ -150,3 +150,65 @@ export async function payPayment(
   );
   return response.data;
 }
+
+
+// --- Vehicles ---
+export interface VehicleInput {
+  brand: string;
+  model: string;
+  licensePlate: string;
+  available: boolean;
+  latitude?: number;
+  longitude?: number;
+  pricePerHour: number;
+}
+
+export async function fetchVehicles(token: string): Promise<Vehicle[]> {
+  const response = await axios.get(`${API_BASE_URL}/vehicles`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data.member || response.data["hydra:member"] || [];
+}
+
+export async function fetchVehicleById(
+  id: number,
+  token: string
+): Promise<Vehicle> {
+  const response = await axios.get(`${API_BASE_URL}/vehicles/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+}
+
+export async function createVehicle(
+  input: VehicleInput,
+  token: string
+): Promise<Vehicle> {
+  const response = await axios.post(`${API_BASE_URL}/vehicles`, input, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  return response.data;
+}
+
+export async function updateVehicle(
+  id: number,
+  input: VehicleInput,
+  token: string
+): Promise<Vehicle> {
+  const response = await axios.put(`${API_BASE_URL}/vehicles/${id}`, input, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  return response.data;
+}
+
+export async function deleteVehicle(id: number, token: string): Promise<void> {
+  await axios.delete(`${API_BASE_URL}/vehicles/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+}
