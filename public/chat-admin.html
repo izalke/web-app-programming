@@ -1,0 +1,94 @@
+<div>
+  <label for="userSelect">Wybierz użytkownika:</label>
+  <select id="userSelect"></select>
+</div>
+
+<div id="chat">
+  <ul id="chatBox"></ul>
+  <input type="text" id="chatInput" placeholder="Wpisz wiadomość...">
+  <button id="sendBtn">Wyślij</button>
+</div>
+
+<script>
+  const token = localStorage.getItem("token");
+  let currentUserId = null;
+  let recipientId = null;
+
+  async function getCurrentUser() {
+    const res = await fetch("http://localhost:8000/api/me", {
+      headers: { Authorization: "Bearer " + token }
+    });
+    const user = await res.json();
+    currentUserId = user.id;
+  }
+
+  async function loadUsers() {
+    const res = await fetch("http://localhost:8000/api/messages/conversations", {
+      headers: { Authorization: "Bearer " + token }
+    });
+    const users = await res.json();
+    const select = document.getElementById("userSelect");
+    select.innerHTML = "<option value=''>-- wybierz --</option>";
+    users.forEach(u => {
+      const opt = document.createElement("option");
+      opt.value = u.id;
+      opt.textContent = u.email;
+      select.appendChild(opt);
+    });
+  }
+
+  async function loadMessages() {
+    if (!recipientId) return;
+    const res = await fetch("http://localhost:8000/api/messages", {
+      headers: { Authorization: "Bearer " + token }
+    });
+    const messages = await res.json();
+    const box = document.getElementById("chatBox");
+    box.innerHTML = "";
+
+    messages
+      .filter(m =>
+        (m.sender?.id === currentUserId && m.recipient?.id === recipientId) ||
+        (m.sender?.id === recipientId && m.recipient?.id === currentUserId)
+      )
+      .forEach(m => {
+        const li = document.createElement("li");
+        const who = m.sender?.id === currentUserId ? "Ty" : m.sender?.email || "anon";
+        li.textContent = `[${who}]: ${m.content}`;
+        box.appendChild(li);
+      });
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById("chatInput");
+    if (!recipientId || !input.value.trim()) return;
+
+    await fetch("http://localhost:8000/api/messages", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        content: input.value,
+        recipient: `/api/users/${recipientId}`
+      })
+    });
+
+    input.value = "";
+    loadMessages();
+  }
+
+  document.getElementById("userSelect").addEventListener("change", e => {
+    recipientId = parseInt(e.target.value);
+    loadMessages();
+  });
+
+  document.getElementById("sendBtn").addEventListener("click", sendMessage);
+
+  (async () => {
+    await getCurrentUser();
+    await loadUsers();
+    setInterval(loadMessages, 3000);
+  })();
+</script>

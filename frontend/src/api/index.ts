@@ -164,7 +164,10 @@ export async function fetchVehicles(token: string): Promise<Vehicle[]> {
   const response = await axios.get(`${API_BASE_URL}/vehicles`, {
     headers: { Authorization: `Bearer ${token}` },
   })
-  return response.data.member || response.data["hydra:member"] || []
+   if (Array.isArray(response.data)) {
+    return response.data;
+  }
+  return response.data["hydra:member"] || [];
 }
 
 export async function fetchVehicleById(

@@ -30,6 +30,7 @@ const VehiclesComponent: React.FC<VehiclesComponentProps> = ({ token }) => {
         }
 
         const vehiclesData = await fetchVehicles(authToken)
+        console.log("vehiclesData from API:", vehiclesData);
         setVehicles(vehiclesData)
       } catch (err) {
         const errorMessage =

@@ -68,4 +68,12 @@ class AuthController extends AbstractController
 
         return new JsonResponse(['token' => $token]);
     }
+
+    #[Route('/api/me', name: 'api_me', methods: ['GET'])]
+public function me(): JsonResponse
+{
+    $user = $this->getUser();
+
+    return $this->json($user, 200, [], ['groups' => 'user:read']);
+}
 }
