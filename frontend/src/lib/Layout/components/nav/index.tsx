@@ -155,7 +155,7 @@ const Nav = (): JSX.Element => {
           animate={{ opacity: isDrawerOpen ? 1 : 0, x: isDrawerOpen ? 0 : -20 }}
           transition={{ duration: 0.3, delay: 0.3 }}
         >
-          {/* <a
+          <a
             href="https://www.facebook.com"
             className={styles.socialLink}
             target="_blank"
@@ -170,7 +170,7 @@ const Nav = (): JSX.Element => {
             rel="noopener noreferrer"
           >
             <FaLinkedin />
-          </a> */}
+          </a>
         </motion.div>
       </motion.div>
 

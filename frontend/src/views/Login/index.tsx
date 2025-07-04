@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react"
+import { useNavigate } from "react-router-dom"
 import { loginUser } from "../../api"
-import styles from "./RegisterForm.module.scss"
+import styles from "./registerForm.module.scss"
 
 type MessageType = "success" | "error" | ""
 
@@ -23,6 +24,7 @@ const LoginForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState("")
   const [messageType, setMessageType] = useState<MessageType>("")
+  const navigate = useNavigate()
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {}
@@ -54,9 +56,14 @@ const LoginForm: React.FC = () => {
       const response = await loginUser(formData.email, formData.password)
       setMessage("Zalogowano pomyślnie!")
       setMessageType("success")
-      // Tu możesz zapisać token do localStorage i przekierować
-      // localStorage.setItem('token', response.token)
-      // window.location.href = "/"
+
+      // Zapisz token do localStorage
+      localStorage.setItem("authToken", response.token)
+
+      // Przekieruj do strony z pojazdami po krótkim delay
+      setTimeout(() => {
+        navigate("/vehicles")
+      }, 1000)
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Wystąpił błąd logowania"
@@ -77,7 +84,8 @@ const LoginForm: React.FC = () => {
             <span className={styles.highlight}>Zaloguj się</span>
           </h1>
           <p className={styles.welcomeDescription}>
-            Wpisz swoje dane, aby uzyskać dostęp do panelu i korzystać z carsharing.
+            Wpisz swoje dane, aby uzyskać dostęp do panelu i korzystać z
+            carsharing.
           </p>
         </div>
       </div>
@@ -108,7 +116,9 @@ const LoginForm: React.FC = () => {
                 onChange={handleChange}
                 placeholder="twoj@email.com"
                 disabled={isLoading}
-                className={`${styles.input} ${errors.email ? styles.error : ""}`}
+                className={`${styles.input} ${
+                  errors.email ? styles.error : ""
+                }`}
               />
               {errors.email && (
                 <span className={styles.errorText}>{errors.email}</span>
@@ -127,7 +137,9 @@ const LoginForm: React.FC = () => {
                 onChange={handleChange}
                 placeholder="••••••••"
                 disabled={isLoading}
-                className={`${styles.input} ${errors.password ? styles.error : ""}`}
+                className={`${styles.input} ${
+                  errors.password ? styles.error : ""
+                }`}
               />
               {errors.password && (
                 <span className={styles.errorText}>{errors.password}</span>

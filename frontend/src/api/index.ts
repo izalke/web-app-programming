@@ -35,7 +35,7 @@ export async function registerUser(
 
 // Login
 export interface LoginResponse {
-  token: string;
+  token: string
 }
 
 export async function loginUser(
@@ -43,57 +43,69 @@ export async function loginUser(
   password: string
 ): Promise<LoginResponse> {
   try {
-    const response = await axios.post<LoginResponse>(
-      `${API_BASE_URL}/login`,
-      { email, password }
-    );
-    return response.data;
+    const response = await axios.post<LoginResponse>(`${API_BASE_URL}/login`, {
+      email,
+      password,
+    })
+    return response.data
   } catch (error: any) {
-    throw new Error(error.response?.data?.error || "Unknown login error");
+    throw new Error(error.response?.data?.error || "Unknown login error")
   }
 }
 
-
-//Reservation
+// --- Unified Vehicle Interface ---
 export interface Vehicle {
-  id: number;
-  brand: string;
-  model: string;
-  licensePlate: string;
-  pricePerHour: number;
+  id: number
+  brand: string
+  model: string
+  licensePlate: string
+  pricePerHour: number
+  available: boolean
+  latitude?: number
+  longitude?: number
 }
 
+// Vehicle input for creating/updating (same as Vehicle but without id)
+export interface VehicleInput {
+  brand: string
+  model: string
+  licensePlate: string
+  available: boolean
+  latitude?: number
+  longitude?: number
+  pricePerHour: number
+}
+
+//Reservation
 export interface Reservation {
-  id: number;
-  vehicle: Vehicle;
-  startTime: string;
-  endTime: string;
-  status: string;
+  id: number
+  vehicle: Vehicle
+  startTime: string
+  endTime: string
+  status: string
 }
 
 export interface CreateReservationInput {
-  vehicle: string; 
-  startTime: string; 
-  endTime: string; 
+  vehicle: string
+  startTime: string
+  endTime: string
 }
 
 export async function fetchReservations(token: string): Promise<Reservation[]> {
   const response = await axios.get(`${API_BASE_URL}/reservations`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data.member || response.data["hydra:member"] || [];
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return response.data.member || response.data["hydra:member"] || []
 }
 
 export async function createReservation(
   input: CreateReservationInput,
   token: string
 ): Promise<Reservation> {
-  const response = await axios.post(
-    `${API_BASE_URL}/reservations`,
-    input,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return response.data;
+  const response = await axios.post(`${API_BASE_URL}/reservations`, input, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return response.data
 }
 
 export async function cancelReservation(
@@ -101,42 +113,38 @@ export async function cancelReservation(
   token: string
 ): Promise<void> {
   await axios.delete(`${API_BASE_URL}/reservations/${reservationId}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+    headers: { Authorization: `Bearer ${token}` },
+  })
 }
 
-
 //Payment
-
 export interface Payment {
-  id: number;
-  amount: number;
-  status: string;
-  reservation: Reservation;
+  id: number
+  amount: number
+  status: string
+  reservation: Reservation
 }
 
 export interface CreatePaymentInput {
-  reservation: string; 
-  amount: number;
+  reservation: string
+  amount: number
 }
 
 export async function createPayment(
   input: CreatePaymentInput,
   token: string
 ): Promise<Payment> {
-  const response = await axios.post(
-    `${API_BASE_URL}/payments`,
-    input,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return response.data;
+  const response = await axios.post(`${API_BASE_URL}/payments`, input, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return response.data
 }
 
 export async function fetchPayments(token: string): Promise<Payment[]> {
   const response = await axios.get(`${API_BASE_URL}/payments`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data.member || response.data["hydra:member"] || [];
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return response.data.member || response.data["hydra:member"] || []
 }
 
 export async function payPayment(
@@ -147,27 +155,16 @@ export async function payPayment(
     `${API_BASE_URL}/payments/${paymentId}/pay`,
     {},
     { headers: { Authorization: `Bearer ${token}` } }
-  );
-  return response.data;
+  )
+  return response.data
 }
-
 
 // --- Vehicles ---
-export interface VehicleInput {
-  brand: string;
-  model: string;
-  licensePlate: string;
-  available: boolean;
-  latitude?: number;
-  longitude?: number;
-  pricePerHour: number;
-}
-
 export async function fetchVehicles(token: string): Promise<Vehicle[]> {
   const response = await axios.get(`${API_BASE_URL}/vehicles`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data.member || response.data["hydra:member"] || [];
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return response.data.member || response.data["hydra:member"] || []
 }
 
 export async function fetchVehicleById(
@@ -175,9 +172,9 @@ export async function fetchVehicleById(
   token: string
 ): Promise<Vehicle> {
   const response = await axios.get(`${API_BASE_URL}/vehicles/${id}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data;
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return response.data
 }
 
 export async function createVehicle(
@@ -187,10 +184,10 @@ export async function createVehicle(
   const response = await axios.post(`${API_BASE_URL}/vehicles`, input, {
     headers: {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
-  return response.data;
+      "Content-Type": "application/json",
+    },
+  })
+  return response.data
 }
 
 export async function updateVehicle(
@@ -201,14 +198,14 @@ export async function updateVehicle(
   const response = await axios.put(`${API_BASE_URL}/vehicles/${id}`, input, {
     headers: {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  });
-  return response.data;
+      "Content-Type": "application/json",
+    },
+  })
+  return response.data
 }
 
 export async function deleteVehicle(id: number, token: string): Promise<void> {
   await axios.delete(`${API_BASE_URL}/vehicles/${id}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+    headers: { Authorization: `Bearer ${token}` },
+  })
 }

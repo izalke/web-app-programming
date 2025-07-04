@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250514203856 extends AbstractMigration
+final class Version20250704090837 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,13 +21,13 @@ final class Version20250514203856 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE vehicle ALTER available DROP NOT NULL
+            ALTER TABLE reservation DROP CONSTRAINT fk_42c849554c3a3bb
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE vehicle ALTER latitude DROP NOT NULL
+            DROP INDEX uniq_42c849554c3a3bb
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE vehicle ALTER longitude DROP NOT NULL
+            ALTER TABLE reservation DROP payment_id
         SQL);
     }
 
@@ -38,13 +38,13 @@ final class Version20250514203856 extends AbstractMigration
             CREATE SCHEMA public
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE vehicle ALTER available SET NOT NULL
+            ALTER TABLE reservation ADD payment_id INT DEFAULT NULL
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE vehicle ALTER latitude SET NOT NULL
+            ALTER TABLE reservation ADD CONSTRAINT fk_42c849554c3a3bb FOREIGN KEY (payment_id) REFERENCES payment (id) NOT DEFERRABLE INITIALLY IMMEDIATE
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE vehicle ALTER longitude SET NOT NULL
+            CREATE UNIQUE INDEX uniq_42c849554c3a3bb ON reservation (payment_id)
         SQL);
     }
 }
