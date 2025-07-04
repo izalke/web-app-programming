@@ -1,10 +1,10 @@
 import { useState, useEffect, JSX } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation, Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import styles from "./nav.module.scss"
 
 import { FaLinkedin, FaFacebookSquare } from "react-icons/fa"
-// import logo from "../../../../assets/img/logo/small-logo.png"
+import logo from "../../../../assets/logo-vroom1.png"
 
 const Nav = (): JSX.Element => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
@@ -44,43 +44,99 @@ const Nav = (): JSX.Element => {
     }
   }, [])
 
-  // Funkcja do płynnego przewijania do sekcji
+  // Funkcja do płynnego przewijania do sekcji (tylko dla strony głównej)
   const scrollToSection = (id: string) => {
-    const section = document.getElementById(id)
-    if (section) {
-      window.scrollTo({
-        top: section.offsetTop - 80,
-        behavior: "smooth",
-      })
-      setIsDrawerOpen(false)
+    // Sprawdź czy jesteśmy na stronie głównej
+    if (pathname === "/") {
+      const section = document.getElementById(id)
+      if (section) {
+        window.scrollTo({
+          top: section.offsetTop - 80,
+          behavior: "smooth",
+        })
+        setIsDrawerOpen(false)
+      }
     }
+  }
+
+  // Funkcja do zamykania drawer po kliknięciu w link
+  const handleLinkClick = () => {
+    setIsDrawerOpen(false)
   }
 
   return (
     <nav className={styles.wrapper}>
       <div className={styles.bar}>
-        <a href="#home">
-          {/* <img src={logo} alt="Company Logo" className={styles.logo} /> */}
-        </a>
+        <Link to="/">
+          <img src={logo} alt="Company Logo" className={styles.logo} />
+        </Link>
         <span className={styles.spacer} />
         <ul className={styles.links}>
           <li>
-            <a href="#home">Home</a>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <a href="#about-us">About</a>
+            {pathname === "/" ? (
+              <a href="#about-us" onClick={() => scrollToSection("about-us")}>
+                About
+              </a>
+            ) : (
+              <Link to="/#about-us">About</Link>
+            )}
           </li>
           <li>
-            <a href="#our-services">Our Services</a>
+            {pathname === "/" ? (
+              <a
+                href="#our-services"
+                onClick={() => scrollToSection("our-services")}
+              >
+                Our Services
+              </a>
+            ) : (
+              <Link to="/#our-services">Our Services</Link>
+            )}
           </li>
           <li>
-            <a href="#why-choose-us">Why Us</a>
+            {pathname === "/" ? (
+              <a
+                href="#why-choose-us"
+                onClick={() => scrollToSection("why-choose-us")}
+              >
+                Why Us
+              </a>
+            ) : (
+              <Link to="/#why-choose-us">Why Us</Link>
+            )}
           </li>
           <li>
-            <a href="#client-testimonials">Testimonials</a>
+            {pathname === "/" ? (
+              <a
+                href="#client-testimonials"
+                onClick={() => scrollToSection("client-testimonials")}
+              >
+                Testimonials
+              </a>
+            ) : (
+              <Link to="/#client-testimonials">Testimonials</Link>
+            )}
           </li>
           <li>
-            <a href="#contact-us">Contact</a>
+            {pathname === "/" ? (
+              <a
+                href="#contact-us"
+                onClick={() => scrollToSection("contact-us")}
+              >
+                Contact
+              </a>
+            ) : (
+              <Link to="/#contact-us">Contact</Link>
+            )}
+          </li>
+          <li>
+            <Link to="/register">Register</Link>
+          </li>
+          <li>
+            <Link to="/login">Login</Link>
           </li>
         </ul>
         <div
@@ -108,42 +164,103 @@ const Nav = (): JSX.Element => {
           animate={{ opacity: isDrawerOpen ? 1 : 0, x: isDrawerOpen ? 0 : -20 }}
           transition={{ duration: 0.3, delay: 0.3 }}
         >
-          <a
-            className={styles.mobileLink}
-            onClick={() => scrollToSection("hero")}
-          >
+          <Link to="/" className={styles.mobileLink} onClick={handleLinkClick}>
             Home
-          </a>
-          <a
+          </Link>
+          {pathname === "/" ? (
+            <a
+              className={styles.mobileLink}
+              onClick={() => scrollToSection("about-us")}
+            >
+              About
+            </a>
+          ) : (
+            <Link
+              to="/#about-us"
+              className={styles.mobileLink}
+              onClick={handleLinkClick}
+            >
+              About
+            </Link>
+          )}
+          {pathname === "/" ? (
+            <a
+              className={styles.mobileLink}
+              onClick={() => scrollToSection("our-services")}
+            >
+              Our Services
+            </a>
+          ) : (
+            <Link
+              to="/#our-services"
+              className={styles.mobileLink}
+              onClick={handleLinkClick}
+            >
+              Our Services
+            </Link>
+          )}
+          {pathname === "/" ? (
+            <a
+              className={styles.mobileLink}
+              onClick={() => scrollToSection("why-choose-us")}
+            >
+              Why Us
+            </a>
+          ) : (
+            <Link
+              to="/#why-choose-us"
+              className={styles.mobileLink}
+              onClick={handleLinkClick}
+            >
+              Why Us
+            </Link>
+          )}
+          {pathname === "/" ? (
+            <a
+              className={styles.mobileLink}
+              onClick={() => scrollToSection("client-testimonials")}
+            >
+              Testimonials
+            </a>
+          ) : (
+            <Link
+              to="/#client-testimonials"
+              className={styles.mobileLink}
+              onClick={handleLinkClick}
+            >
+              Testimonials
+            </Link>
+          )}
+          {pathname === "/" ? (
+            <a
+              className={styles.mobileLink}
+              onClick={() => scrollToSection("contact-us")}
+            >
+              Contact
+            </a>
+          ) : (
+            <Link
+              to="/#contact-us"
+              className={styles.mobileLink}
+              onClick={handleLinkClick}
+            >
+              Contact
+            </Link>
+          )}
+          <Link
+            to="/register"
             className={styles.mobileLink}
-            onClick={() => scrollToSection("about-us")}
+            onClick={handleLinkClick}
           >
-            About
-          </a>
-          <a
+            Register
+          </Link>
+          <Link
+            to="/login"
             className={styles.mobileLink}
-            onClick={() => scrollToSection("our-services")}
+            onClick={handleLinkClick}
           >
-            Our Services
-          </a>
-          <a
-            className={styles.mobileLink}
-            onClick={() => scrollToSection("why-choose-us")}
-          >
-            Why Us
-          </a>
-          <a
-            className={styles.mobileLink}
-            onClick={() => scrollToSection("client-testimonials")}
-          >
-            Testimonials
-          </a>
-          <a
-            className={styles.mobileLink}
-            onClick={() => scrollToSection("contact-us")}
-          >
-            Contact
-          </a>
+            Login
+          </Link>
         </motion.div>
 
         <div className={styles.spacer} />
