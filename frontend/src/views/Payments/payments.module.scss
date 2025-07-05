@@ -85,9 +85,10 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
 .paymentsList {
   display: grid;
   gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
 
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -98,6 +99,7 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
   padding: 1.5rem;
   transition: all 0.3s ease;
   border-left: 4px solid transparent;
+  overflow: hidden;
 
   &:hover {
     box-shadow: $shadow-lg;
@@ -132,10 +134,17 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
 .paymentHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid $gray-200;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .paymentStatus {
@@ -146,6 +155,8 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
   border-radius: 20px;
   font-weight: 600;
   font-size: 0.875rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 
   &.statusPending {
     background: $primary-blue-light;
@@ -169,6 +180,8 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
   font-size: 1.5rem;
   font-weight: 700;
   color: $gray-900;
+  flex-shrink: 0;
+  white-space: nowrap;
 
   svg {
     color: $primary-blue;
@@ -177,10 +190,11 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
 
 .paymentDetails {
   display: grid;
-  gap: 1rem;
+  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
 
-  @media (min-width: 640px) {
-    grid-template-columns: 1fr 1fr;
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -189,28 +203,38 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  min-width: 0;
 }
 
 .detailItem {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+  word-wrap: break-word;
 
   svg {
     color: $primary-blue;
     flex-shrink: 0;
+    margin-top: 0.125rem;
   }
 }
 
 .detailLabel {
   font-weight: 600;
   color: $gray-700;
-  min-width: 80px;
+  min-width: 90px;
+  flex-shrink: 0;
+  font-size: 0.875rem;
 }
 
 .detailValue {
   color: $gray-900;
   font-weight: 500;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  font-size: 0.875rem;
 }
 
 .paymentActions {
@@ -341,18 +365,51 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
 
   .paymentAmount {
     justify-content: center;
+    font-size: 1.25rem;
   }
 
   .paymentDetails {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .detailItem {
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: flex-start;
 
     .detailLabel {
       min-width: auto;
+      font-size: 0.8rem;
     }
+
+    .detailValue {
+      font-size: 0.9rem;
+      padding-left: 1.5rem;
+    }
+  }
+
+  .paymentsList {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .detailLabel {
+    font-size: 0.75rem;
+  }
+
+  .detailValue {
+    font-size: 0.85rem;
+  }
+
+  .paymentAmount {
+    font-size: 1.1rem;
+  }
+
+  .paymentStatus {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
   }
 }
 
