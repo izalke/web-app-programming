@@ -12,6 +12,7 @@ import Login from "./views/Login"
 import VehiclesComponent from "./views/Vehicles"
 import Payments from "./views/Payments"
 import NotFound from "./views/NotFound"
+import Reservation from "./views/Reservation"
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "/payments",
         element: <Payments token={""} />,
+      },
+      {
+        path: "/reservation",
+        element: <Reservation token={""} />,
       },
     ],
   },

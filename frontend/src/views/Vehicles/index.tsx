@@ -11,7 +11,8 @@ import {
   Settings,
 } from "lucide-react"
 import { fetchVehicles, Vehicle, fetchPayments } from "../../api"
-import Payments from "../Payments" // Importuj komponent płatności
+import Payments from "../Payments"
+import Reservations from "../Reservation"
 import styles from "./vehiclesComponent.module.scss"
 
 interface VehiclesComponentProps {
@@ -22,9 +23,9 @@ const VehiclesComponent: React.FC<VehiclesComponentProps> = ({ token }) => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [currentView, setCurrentView] = useState<"vehicles" | "payments">(
-    "vehicles"
-  )
+  const [currentView, setCurrentView] = useState<
+    "vehicles" | "payments" | "reservations"
+  >("vehicles")
   const [pendingPaymentsCount, setPendingPaymentsCount] = useState(0)
   const navigate = useNavigate()
 
@@ -147,24 +148,49 @@ const VehiclesComponent: React.FC<VehiclesComponentProps> = ({ token }) => {
     navigate("/login")
   }
 
-  // Nowa funkcja do przełączania widoku
+  // Funkcje do przełączania widoku
   const handleNavigateToPayments = () => {
     setCurrentView("payments")
+  }
+
+  const handleNavigateToReservations = () => {
+    setCurrentView("reservations")
   }
 
   const handleNavigateToVehicles = () => {
     setCurrentView("vehicles")
   }
 
+  // Pobierz token dla komponentów podrzędnych
+  const authToken = token || localStorage.getItem("authToken")
+  if (!authToken) {
+    navigate("/login")
+    return null
+  }
+
   // Jeśli aktualny widok to płatności, wyświetl komponent płatności
   if (currentView === "payments") {
-    const authToken = token || localStorage.getItem("authToken")
-    if (!authToken) {
-      navigate("/login")
-      return null
-    }
     return (
       <Payments token={authToken} onNavigateBack={handleNavigateToVehicles} />
+    )
+  }
+
+  // Jeśli aktualny widok to rezerwacje, wyświetl komponent rezerwacji
+  if (currentView === "reservations") {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.headerContent}>
+            <button
+              onClick={handleNavigateToVehicles}
+              className={styles.backButton}
+            >
+              ← Powrót do pojazdów
+            </button>
+          </div>
+        </div>
+        <Reservations token={authToken} />
+      </div>
     )
   }
 
@@ -228,7 +254,7 @@ const VehiclesComponent: React.FC<VehiclesComponentProps> = ({ token }) => {
               )}
             </button>
             <button
-              onClick={() => alert("Funkcja w budowie")}
+              onClick={handleNavigateToReservations}
               className={styles.navButton}
             >
               <Receipt className="w-5 h-5 mr-2" />
