@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { Star, Users, Fuel, MapPin } from "lucide-react"
-import { fetchVehicles, Vehicle } from "../../api"
+import {
+  Star,
+  Users,
+  Fuel,
+  MapPin,
+  CreditCard,
+  Receipt,
+  User,
+  Settings,
+} from "lucide-react"
+import { fetchVehicles, Vehicle, fetchPayments } from "../../api"
+import Payments from "../Payments" // Importuj komponent płatności
 import styles from "./vehiclesComponent.module.scss"
 
 interface VehiclesComponentProps {
@@ -12,6 +22,10 @@ const VehiclesComponent: React.FC<VehiclesComponentProps> = ({ token }) => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentView, setCurrentView] = useState<"vehicles" | "payments">(
+    "vehicles"
+  )
+  const [pendingPaymentsCount, setPendingPaymentsCount] = useState(0)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -30,8 +44,19 @@ const VehiclesComponent: React.FC<VehiclesComponentProps> = ({ token }) => {
         }
 
         const vehiclesData = await fetchVehicles(authToken)
-        console.log("vehiclesData from API:", vehiclesData);
+        console.log("vehiclesData from API:", vehiclesData)
         setVehicles(vehiclesData)
+
+        // Pobierz również płatności żeby sprawdzić ile jest oczekujących
+        try {
+          const paymentsData = await fetchPayments(authToken)
+          const pendingCount = paymentsData.filter(
+            (p) => p.status.toLowerCase() === "pending"
+          ).length
+          setPendingPaymentsCount(pendingCount)
+        } catch (paymentError) {
+          console.error("Error fetching payments:", paymentError)
+        }
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : "Failed to load vehicles"
@@ -122,6 +147,27 @@ const VehiclesComponent: React.FC<VehiclesComponentProps> = ({ token }) => {
     navigate("/login")
   }
 
+  // Nowa funkcja do przełączania widoku
+  const handleNavigateToPayments = () => {
+    setCurrentView("payments")
+  }
+
+  const handleNavigateToVehicles = () => {
+    setCurrentView("vehicles")
+  }
+
+  // Jeśli aktualny widok to płatności, wyświetl komponent płatności
+  if (currentView === "payments") {
+    const authToken = token || localStorage.getItem("authToken")
+    if (!authToken) {
+      navigate("/login")
+      return null
+    }
+    return (
+      <Payments token={authToken} onNavigateBack={handleNavigateToVehicles} />
+    )
+  }
+
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -166,20 +212,38 @@ const VehiclesComponent: React.FC<VehiclesComponentProps> = ({ token }) => {
           <p className={styles.subtitle}>
             Choose from our fleet of premium vehicles
           </p>
-          <button
-            onClick={handleLogout}
-            style={{
-              position: "absolute",
-              top: "20px",
-              right: "20px",
-              padding: "8px 16px",
-              backgroundColor: "#dc3545",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
+
+          {/* Navigation Menu */}
+          <div className={styles.navigationMenu}>
+            <button
+              onClick={handleNavigateToPayments}
+              className={styles.navButton}
+            >
+              <CreditCard className="w-5 h-5 mr-2" />
+              Płatności
+              {pendingPaymentsCount > 0 && (
+                <span className={styles.notificationBadge}>
+                  {pendingPaymentsCount}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => alert("Funkcja w budowie")}
+              className={styles.navButton}
+            >
+              <Receipt className="w-5 h-5 mr-2" />
+              Rezerwacje
+            </button>
+            <button
+              onClick={() => alert("Funkcja w budowie")}
+              className={styles.navButton}
+            >
+              <User className="w-5 h-5 mr-2" />
+              Profil
+            </button>
+          </div>
+
+          <button onClick={handleLogout} className={styles.logoutButton}>
             Logout
           </button>
         </div>

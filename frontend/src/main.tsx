@@ -10,6 +10,7 @@ import Home from "./views/Home"
 import Register from "./views/Register"
 import Login from "./views/Login"
 import VehiclesComponent from "./views/Vehicles"
+// import Payments from "./views/Payments"
 
 const router = createBrowserRouter([
   {

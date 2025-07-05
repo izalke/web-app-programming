@@ -8,6 +8,7 @@ import {
   Car,
   Calendar,
   DollarSign,
+  ArrowLeft,
 } from "lucide-react"
 
 const styles = {
@@ -15,6 +16,7 @@ const styles = {
   header: "header",
   title: "title",
   subtitle: "subtitle",
+  backButton: "back-button",
   paymentsList: "payments-list",
   paymentCard: "payment-card",
   paymentCardPending: "payment-card--pending",
@@ -44,9 +46,10 @@ const styles = {
 
 interface PaymentsProps {
   token: string
+  onNavigateBack?: () => void // Dodany opcjonalny prop
 }
 
-const Payments: React.FC<PaymentsProps> = ({ token }) => {
+const Payments: React.FC<PaymentsProps> = ({ token, onNavigateBack }) => {
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -158,6 +161,12 @@ const Payments: React.FC<PaymentsProps> = ({ token }) => {
   return (
     <div className={styles.paymentsContainer}>
       <div className={styles.header}>
+        {onNavigateBack && (
+          <button onClick={onNavigateBack} className={styles.backButton}>
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Powrót do pojazdów
+          </button>
+        )}
         <h1 className={styles.title}>
           <CreditCard className="w-8 h-8 mr-3" />
           Płatności

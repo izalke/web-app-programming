@@ -32,6 +32,28 @@ $shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
 .header {
   margin-bottom: 2rem;
   text-align: center;
+  position: relative;
+
+  .backButton {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    background: $white;
+    color: $primary-blue;
+    border: 2px solid $primary-blue;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $primary-blue;
+      color: $white;
+    }
+  }
 
   .title {
     display: flex;
