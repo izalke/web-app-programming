@@ -46,7 +46,7 @@ const styles = {
 
 interface PaymentsProps {
   token: string
-  onNavigateBack?: () => void // Dodany opcjonalny prop
+  onNavigateBack?: () => void
 }
 
 const Payments: React.FC<PaymentsProps> = ({ token, onNavigateBack }) => {
@@ -56,6 +56,12 @@ const Payments: React.FC<PaymentsProps> = ({ token, onNavigateBack }) => {
   const [payingIds, setPayingIds] = useState<Set<number>>(new Set())
 
   useEffect(() => {
+    if (!token) {
+      setError("Brak autoryzacji. Zaloguj się ponownie.")
+      setLoading(false)
+      return
+    }
+
     loadPayments()
   }, [token])
 
@@ -64,6 +70,7 @@ const Payments: React.FC<PaymentsProps> = ({ token, onNavigateBack }) => {
       setLoading(true)
       setError(null)
       const paymentsData = await fetchPayments(token)
+      console.log("Fetched payments:", paymentsData) // debug
       setPayments(paymentsData)
     } catch (err) {
       setError("Nie udało się załadować płatności")
@@ -77,7 +84,7 @@ const Payments: React.FC<PaymentsProps> = ({ token, onNavigateBack }) => {
     try {
       setPayingIds((prev) => new Set([...prev, paymentId]))
       await payPayment(paymentId, token)
-      await loadPayments() // Odświeżenie listy
+      await loadPayments()
     } catch (err) {
       setError("Nie udało się zrealizować płatności")
       console.error("Error processing payment:", err)
@@ -221,14 +228,14 @@ const Payments: React.FC<PaymentsProps> = ({ token, onNavigateBack }) => {
                     <Car className="w-4 h-4 mr-2" />
                     <span className={styles.detailLabel}>Pojazd:</span>
                     <span className={styles.detailValue}>
-                      {payment.reservation.vehicle.brand}{" "}
-                      {payment.reservation.vehicle.model}
+                      {payment.reservation?.vehicle?.brand ?? "brak danych"}
+                      {payment.reservation?.vehicle?.model}
                     </span>
                   </div>
                   <div className={styles.detailItem}>
                     <span className={styles.detailLabel}>Rejestracja:</span>
                     <span className={styles.detailValue}>
-                      {payment.reservation.vehicle.licensePlate}
+                      {payment.reservation?.vehicle?.licensePlate}
                     </span>
                   </div>
                 </div>

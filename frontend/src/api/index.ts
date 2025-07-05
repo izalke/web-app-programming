@@ -144,7 +144,7 @@ export async function fetchPayments(token: string): Promise<Payment[]> {
   const response = await axios.get(`${API_BASE_URL}/payments`, {
     headers: { Authorization: `Bearer ${token}` },
   })
-  return response.data.member || response.data["hydra:member"] || []
+  return response.data
 }
 
 export async function payPayment(
