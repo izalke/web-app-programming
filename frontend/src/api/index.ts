@@ -95,7 +95,7 @@ export async function fetchReservations(token: string): Promise<Reservation[]> {
   const response = await axios.get(`${API_BASE_URL}/reservations`, {
     headers: { Authorization: `Bearer ${token}` },
   })
-  return response.data.member || response.data["hydra:member"] || []
+  return response.data
 }
 
 export async function createReservation(
@@ -164,10 +164,10 @@ export async function fetchVehicles(token: string): Promise<Vehicle[]> {
   const response = await axios.get(`${API_BASE_URL}/vehicles`, {
     headers: { Authorization: `Bearer ${token}` },
   })
-   if (Array.isArray(response.data)) {
-    return response.data;
+  if (Array.isArray(response.data)) {
+    return response.data
   }
-  return response.data["hydra:member"] || [];
+  return response.data["hydra:member"] || []
 }
 
 export async function fetchVehicleById(
