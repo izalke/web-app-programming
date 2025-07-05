@@ -32,7 +32,7 @@ class Reservation
     private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: Vehicle::class)]
-    #[Groups(['reservation:read', 'reservation:write'])]
+    #[Groups(['reservation:read', 'reservation:write', 'payment:read'])]
     private ?Vehicle $vehicle = null;
 
     #[ORM\OneToOne(mappedBy: "reservation", targetEntity: Payment::class, cascade: ["persist", "remove"])]
@@ -41,16 +41,16 @@ class Reservation
 
     #[ORM\Column(type: 'datetime')]
     #[Assert\NotBlank]
-    #[Groups(['reservation:read', 'reservation:write'])]
+    #[Groups(['reservation:read', 'reservation:write', 'payment:read'])]
     private \DateTimeInterface $startTime;
 
     #[ORM\Column(type: 'datetime')]
     #[Assert\NotBlank]
-    #[Groups(['reservation:read', 'reservation:write'])]
+    #[Groups(['reservation:read', 'reservation:write', 'payment:read'])]
     private \DateTimeInterface $endTime;
 
     #[ORM\Column(length: 20)]
-    #[Groups(['reservation:read'])]
+    #[Groups(['reservation:read', 'payment:read'])]
     private string $status = 'pending';
 
     public function getId(): ?int { return $this->id; }

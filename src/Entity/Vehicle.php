@@ -17,35 +17,35 @@ class Vehicle
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['reservation:read', 'vehicle:read'])]
+    #[Groups(['reservation:read', 'vehicle:read', 'payment:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 32)]
-    #[Groups(['reservation:read', 'vehicle:read'])]
+    #[Groups(['reservation:read', 'vehicle:read', 'payment:read'])]
     private ?string $brand = null;
 
     #[ORM\Column(length: 64)]
-    #[Groups(['reservation:read', 'vehicle:read'])]
+    #[Groups(['reservation:read', 'vehicle:read', 'payment:read'])]
     private ?string $model = null;
 
     #[ORM\Column(length: 32)]
-    #[Groups(['reservation:read', 'vehicle:read'])]
+    #[Groups(['reservation:read', 'vehicle:read', 'payment:read'])]
     private ?string $licensePlate = null;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
-    #[Groups(['reservation:read', 'vehicle:read'])]
+    #[Groups(['reservation:read', 'vehicle:read', 'payment:read'])]
     private ?bool $available = null;
 
     #[ORM\Column(type: 'float', nullable: true)]
-    #[Groups(['reservation:read', 'vehicle:read'])]
+    #[Groups(['reservation:read', 'vehicle:read', 'payment:read'])]
     private ?float $latitude = null;
 
     #[ORM\Column(type: 'float', nullable: true)]
-    #[Groups(['reservation:read', 'vehicle:read'])]
+    #[Groups(['reservation:read', 'vehicle:read', 'payment:read'])]
     private ?float $longitude = null;
 
     #[ORM\Column(type: 'float', nullable: true)]
-    #[Groups(['reservation:read', 'vehicle:read'])]
+    #[Groups(['reservation:read', 'vehicle:read', 'payment:read'])]
     private ?float $pricePerHour = null;
 
     public function getId(): ?int
