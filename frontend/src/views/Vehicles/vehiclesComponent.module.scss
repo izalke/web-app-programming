@@ -1,21 +1,18 @@
-// VehiclesComponent.module.scss
-
 .container {
   min-height: 100vh;
   background-color: #f8fafc;
-  padding-top: 120px; // Pozostaw padding dla navbara
+  padding-top: 200px;
 }
 
 .header {
   background-color: white;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  // Usunięte fixed pozycjonowanie - już masz navbar fixed
 
   .headerContent {
     max-width: 1280px;
     margin: 0 auto;
     padding: 1rem 1rem;
-    position: relative; // Dodane dla pozycjonowania przycisku logout
+    position: relative;
 
     @media (min-width: 640px) {
       padding: 1rem 1.5rem;
@@ -38,7 +35,6 @@
     margin: 0 0 1rem 0;
   }
 
-  // Navigation Menu Styles
   .navigationMenu {
     display: flex;
     gap: 1rem;
@@ -141,6 +137,7 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  margin-top: 120px;
 
   @media (min-width: 640px) {
     padding: 2rem 1.5rem;
@@ -148,6 +145,10 @@
 
   @media (min-width: 1024px) {
     padding: 2rem 2rem;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 100px;
   }
 }
 
@@ -405,7 +406,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 120px; // Dodane aby nie było ukryte pod headerem
+  padding-top: 120px;
 
   .loadingContent {
     text-align: center;
@@ -433,7 +434,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 120px; // Dodane aby nie było ukryte pod headerem
+  padding-top: 120px;
 
   .errorContent {
     text-align: center;
@@ -468,10 +469,9 @@
   }
 }
 
-// Dodane style responsywne dla mobilnych
 @media (max-width: 768px) {
   .container {
-    padding-top: 100px; // Mniej miejsca bo header nie jest już fixed
+    padding-top: 100px;
   }
 
   .header {
@@ -482,6 +482,6 @@
 
   .loadingContainer,
   .errorContainer {
-    padding-top: 100px; // Mniej miejsca bo header nie jest już fixed
+    padding-top: 100px;
   }
 }

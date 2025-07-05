@@ -6,6 +6,25 @@
   z-index: 997;
 }
 
+// .bar {
+//   width: 100%;
+//   padding: 1rem 3rem;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+
+//   background-color: map.get($theme, "antiflashWhite");
+//   box-shadow: 1px 1px 3px 0px rgba(map.get($theme, "richBlack"), 0.2);
+
+//   position: sticky; /* Zamiast fixed */
+//   top: 0;
+//   z-index: 1000;
+
+//   @media screen and (max-width: 1024px) {
+//     padding: 1rem;
+//   }
+// }
+
 .bar {
   width: 100%;
   padding: 1.5rem 4rem;

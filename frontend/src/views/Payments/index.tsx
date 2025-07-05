@@ -10,39 +10,7 @@ import {
   DollarSign,
   ArrowLeft,
 } from "lucide-react"
-
-const styles = {
-  paymentsContainer: "payments-container",
-  header: "header",
-  title: "title",
-  subtitle: "subtitle",
-  backButton: "back-button",
-  paymentsList: "payments-list",
-  paymentCard: "payment-card",
-  paymentCardPending: "payment-card--pending",
-  paymentCardPaid: "payment-card--paid",
-  paymentCardCancelled: "payment-card--cancelled",
-  paymentHeader: "payment-header",
-  paymentStatus: "payment-status",
-  statusPending: "status--pending",
-  statusPaid: "status--paid",
-  statusCancelled: "status--cancelled",
-  paymentAmount: "payment-amount",
-  paymentDetails: "payment-details",
-  detailItem: "detail-item",
-  detailLabel: "detail-label",
-  detailValue: "detail-value",
-  vehicleInfo: "vehicle-info",
-  reservationInfo: "reservation-info",
-  paymentActions: "payment-actions",
-  payButton: "pay-button",
-  payButtonDisabled: "pay-button--disabled",
-  emptyState: "empty-state",
-  emptyStateIcon: "empty-state-icon",
-  emptyStateText: "empty-state-text",
-  loadingState: "loading-state",
-  errorState: "error-state",
-}
+import styles from "./payments.module.scss"
 
 interface PaymentsProps {
   token: string
@@ -151,7 +119,7 @@ const Payments: React.FC<PaymentsProps> = ({ token, onNavigateBack }) => {
   if (error) {
     return (
       <div className={`${styles.paymentsContainer} ${styles.errorState}`}>
-        <div className="text-center text-red-600 p-8">
+        <div className={styles.errorContainer}>
           <XCircle className="w-16 h-16 mx-auto mb-4" />
           <p className="text-lg">{error}</p>
           <button
